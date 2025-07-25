@@ -5,6 +5,7 @@ from .models import Poll, Option, Vote
 from .serializers import PollSerializer, VoteSerializer
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 
 class PollListCreate(generics.ListCreateAPIView):
     queryset = Poll.objects.prefetch_related('options')
@@ -21,6 +22,7 @@ class PollResults(views.APIView):
         } for opt in options])
 
 class VoteCreate(views.APIView):
+    @swagger_auto_schema(request_body=VoteSerializer)
     def post(self, request):
         serializer = VoteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
