@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 from django.db import models
@@ -16,11 +17,11 @@ class Option(models.Model):
 
 class Vote(models.Model):
     option = models.ForeignKey(Option, on_delete=models.CASCADE)
-    voter_id = models.CharField(max_length=40)  # Session/IP hash
+    voter = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True)
     voted_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = [['option', 'voter_id']]  # Prevent duplicate votes
+        unique_together = [['option', 'voter']]  # Prevent duplicate votes
         indexes = [
-            models.Index(fields=['voter_id', 'option'])
+            models.Index(fields=['voter', 'option'])
         ]
