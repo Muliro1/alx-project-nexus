@@ -42,7 +42,7 @@ python manage.py runserver
 
 #### 6. **Access the API documentation**
 - Open your browser and go to:  
-  [http://localhost:8000/swagger/](http://localhost:8000/swagger/)
+  [http://localhost:8000/api-docs/](http://localhost:8000/api-docs/)
 
 ---
 
@@ -93,9 +93,7 @@ curl -X POST http://localhost:8000/polls/vote/ \
 ### Notes
 
 - All endpoints accept and return JSON.
-- Use the Swagger UI at `/swagger/` for interactive API exploration and testing.
+- Use the Swagger UI at `/api-docs/` for interactive API exploration and testing.
 - Make sure to use trailing slashes in all endpoint URLs (e.g., `/polls/vote/`).
 
 ---
-
-Let me know if you want to add authentication instructions or more advanced usage!
