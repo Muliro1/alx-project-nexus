@@ -8,9 +8,11 @@ from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserRegistrationSerializer
+from rest_framework.permissions import AllowAny
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(request_body=UserRegistrationSerializer)
     def post(self, request, *args, **kwargs):
