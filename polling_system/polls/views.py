@@ -12,6 +12,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
+from rest_framework.authtoken.views import ObtainAuthToken
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -67,7 +68,7 @@ class VoteCreate(views.APIView):
         
         return Response({"status": "Vote recorded"}, status=status.HTTP_201_CREATED)
 
-class CustomObtainAuthToken(APIView):
+class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
