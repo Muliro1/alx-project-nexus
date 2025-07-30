@@ -11,6 +11,8 @@ from .serializers import UserRegistrationSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
+from rest_framework.views import APIView
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -66,8 +68,13 @@ class VoteCreate(views.APIView):
         
         return Response({"status": "Vote recorded"}, status=status.HTTP_201_CREATED)
 
-class CustomObtainAuthToken(ObtainAuthToken):
+class CustomObtainAuthToken(APIView):
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        token = Token.objects.get(key=response.data['token'])
-        return Response({'token': token.key, 'user_id': token.user_id})
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key, 'user_id': user.id})
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
