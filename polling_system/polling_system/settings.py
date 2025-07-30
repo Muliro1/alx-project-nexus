@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',  # Swagger documentation
     'corsheaders',
-    'polls'
+    'polls',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -151,4 +152,8 @@ SWAGGER_SETTINGS = {
             'description': 'Token-based authentication with required prefix: Token <your_token>',
         }
     }
+}
+
+GRAPHENE = {
+    "SCHEMA": "polls.schema.schema"  # We'll create this file next
 }

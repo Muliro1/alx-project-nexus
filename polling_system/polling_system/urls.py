@@ -22,6 +22,7 @@ from drf_yasg import openapi
 from rest_framework import permissions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import obtain_auth_token
+from graphene_django.views import GraphQLView
 
 
 schema_view = get_schema_view(
@@ -39,4 +40,5 @@ urlpatterns = [
     path('polls/', include('polls.urls')),
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='api-docs'),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path("graphql/", GraphQLView.as_view(graphiql=True)),
 ]
