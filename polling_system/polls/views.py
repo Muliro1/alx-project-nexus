@@ -12,6 +12,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
+from drf_yasg import openapi
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -68,6 +69,46 @@ class VoteCreate(views.APIView):
         return Response({"status": "Vote recorded"}, status=status.HTTP_201_CREATED)
 
 class CustomObtainAuthToken(APIView):
+    permission_classes = [AllowAny]
+    
+    @swagger_auto_schema(
+        operation_description="Obtain authentication token using username and password",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['username', 'password'],
+            properties={
+                'username': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="User's username"
+                ),
+                'password': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="User's password"
+                ),
+            }
+        ),
+        responses={
+            200: openapi.Response(
+                description="Authentication successful",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'token': openapi.Schema(type=openapi.TYPE_STRING, description="Authentication token"),
+                        'user_id': openapi.Schema(type=openapi.TYPE_INTEGER, description="User ID"),
+                    }
+                )
+            ),
+            400: openapi.Response(
+                description="Authentication failed",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'error': openapi.Schema(type=openapi.TYPE_STRING, description="Error message"),
+                    }
+                )
+            ),
+        }
+    )
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
