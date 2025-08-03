@@ -1,0 +1,29 @@
+# Database Configuration
+DB_NAME=polling_system_db
+DB_USER=polling_user
+DB_PASSWORD=polling_password
+DB_HOST=localhost
+DB_PORT=5432
+
+# Django Settings
+SECRET_KEY=django-insecure--ijc2((o8%ywjq%wr_&s5$wq_!cmyon5tbch+trzyuore(^is6
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1,.onrender.com
+
+# Security Settings (for production, set these to True)
+SECURE_SSL_REDIRECT=False
+SESSION_COOKIE_SECURE=False
+CSRF_COOKIE_SECURE=False
+
+# CORS Settings
+CORS_ORIGIN_ALLOW_ALL=True
+CORS_ALLOWED_ORIGINS=
+
+# For Render deployment, you'll need to set these in the Render dashboard:
+# DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT
+# SECRET_KEY (generate a new one for production)
+# DEBUG=False
+# ALLOWED_HOSTS=your-app-name.onrender.com
+# SECURE_SSL_REDIRECT=True
+# SESSION_COOKIE_SECURE=True
+# CSRF_COOKIE_SECURE=True 
