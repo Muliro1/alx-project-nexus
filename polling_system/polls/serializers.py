@@ -98,15 +98,48 @@ class PollSerializer(WritableNestedModelSerializer):
         return value
 
 class VoteSerializer(serializers.Serializer):
+    poll_id = serializers.IntegerField()
     option_id = serializers.IntegerField()
     voter_id = serializers.CharField(max_length=40, required=False)
     
-    def validate_option_id(self, value):
-        # Ensure option exists and poll hasn't expired
+    def validate(self, data):
+        """
+        Validate that the option belongs to the specified poll.
+        """
+        poll_id = data.get('poll_id')
+        option_id = data.get('option_id')
+        
         try:
-            option = Option.objects.get(id=value)
-            if option.poll.expires_at < timezone.now():
+            option = Option.objects.get(id=option_id)
+            poll = option.poll
+            
+            # Check if option belongs to the specified poll
+            if poll.id != poll_id:
+                raise serializers.ValidationError("Option does not belong to the specified poll.")
+            
+            # Check if poll has expired
+            if poll.expires_at < timezone.now():
                 raise serializers.ValidationError("Cannot vote on expired poll.")
+                
+        except Option.DoesNotExist:
+            raise serializers.ValidationError("Invalid option ID.")
+        
+        return data
+    
+    def validate_poll_id(self, value):
+        """Validate poll exists."""
+        try:
+            poll = Poll.objects.get(id=value)
+            if poll.expires_at < timezone.now():
+                raise serializers.ValidationError("Cannot vote on expired poll.")
+        except Poll.DoesNotExist:
+            raise serializers.ValidationError("Invalid poll ID.")
+        return value
+    
+    def validate_option_id(self, value):
+        """Validate option exists."""
+        try:
+            Option.objects.get(id=value)
         except Option.DoesNotExist:
             raise serializers.ValidationError("Invalid option ID.")
         return value

@@ -78,27 +78,65 @@ class PollResults(views.APIView):
 class VoteCreate(views.APIView):
     permission_classes = [IsAuthenticated]
 
-    @swagger_auto_schema(request_body=VoteSerializer)
+    @swagger_auto_schema(
+        request_body=VoteSerializer,
+        operation_description="Vote on a specific option in a poll",
+        responses={
+            201: openapi.Response(
+                description="Vote recorded successfully",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'status': openapi.Schema(type=openapi.TYPE_STRING, description="Success message"),
+                    }
+                )
+            ),
+            400: openapi.Response(
+                description="Validation error or poll expired",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'error': openapi.Schema(type=openapi.TYPE_STRING, description="Error message"),
+                    }
+                )
+            ),
+            404: openapi.Response(
+                description="Poll or option not found",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'error': openapi.Schema(type=openapi.TYPE_STRING, description="Error message"),
+                    }
+                )
+            ),
+        }
+    )
     def post(self, request):
         serializer = VoteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        option = get_object_or_404(Option, id=serializer.validated_data['option_id'])
-        poll = option.poll
+        # Get poll and option with explicit validation
+        poll_id = serializer.validated_data['poll_id']
+        option_id = serializer.validated_data['option_id']
+        
+        poll = get_object_or_404(Poll, id=poll_id)
+        option = get_object_or_404(Option, id=option_id, poll=poll)
         user = request.user
         
-        # Check expiration
+        # Additional validation (redundant but explicit)
         if poll.expires_at < timezone.now():
             return Response({"error": "Poll has expired"}, status=status.HTTP_400_BAD_REQUEST)
         
-        
+        # Check if user already voted on this option
+        existing_vote = Vote.objects.filter(option=option, voter=user).first()
+        if existing_vote:
+            return Response({"error": "You have already voted on this option"}, status=status.HTTP_400_BAD_REQUEST)
         
         # Create vote
-        Vote.objects.update_or_create(
+        Vote.objects.create(
             option=option,
-            voter_id=serializer.validated_data['voter_id'],
-            voter = user,
-            defaults={}
+            voter=user,
+            voter_id=serializer.validated_data.get('voter_id', '')
         )
         
         # Update vote count
