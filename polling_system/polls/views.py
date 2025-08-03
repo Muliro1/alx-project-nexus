@@ -25,6 +25,45 @@ class UserRegistrationView(generics.CreateAPIView):
 class PollListCreate(generics.ListCreateAPIView):
     queryset = Poll.objects.prefetch_related('options')
     serializer_class = PollSerializer
+    permission_classes = [IsAuthenticated]
+    
+    @swagger_auto_schema(
+        operation_description="List all polls (GET) or create a new poll (POST)",
+        request_body=PollSerializer,
+        responses={
+            200: PollSerializer(many=True),
+            201: PollSerializer,
+            401: openapi.Response(
+                description="Authentication credentials were not provided",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description="Error message"),
+                    }
+                )
+            ),
+        }
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+    
+    @swagger_auto_schema(
+        operation_description="List all polls",
+        responses={
+            200: PollSerializer(many=True),
+            401: openapi.Response(
+                description="Authentication credentials were not provided",
+                schema=openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={
+                        'detail': openapi.Schema(type=openapi.TYPE_STRING, description="Error message"),
+                    }
+                )
+            ),
+        }
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 class PollResults(views.APIView):
     def get(self, request, pk):

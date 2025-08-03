@@ -1,0 +1,62 @@
+@startuml Polling System ERD
+
+!define RECTANGLE class
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' User model (Django's built-in User model)
+entity "User" as user {
+    * id : Integer (PK)
+    --
+    username : String
+    email : String
+    password : String
+    first_name : String
+    last_name : String
+    is_active : Boolean
+    date_joined : DateTime
+}
+
+' Poll model
+entity "Poll" as poll {
+    * id : Integer (PK)
+    --
+    question : String(200)
+    created_at : DateTime
+    expires_at : DateTime
+}
+
+' Option model
+entity "Option" as option {
+    * id : Integer (PK)
+    --
+    poll_id : Integer (FK)
+    text : String(100)
+    votes : Integer
+}
+
+' Vote model
+entity "Vote" as vote {
+    * id : Integer (PK)
+    --
+    option_id : Integer (FK)
+    voter_id : Integer (FK)
+    voted_at : DateTime
+}
+
+' Relationships
+poll ||--o{ option : "has many"
+option ||--o{ vote : "has many"
+user ||--o{ vote : "has many"
+
+' Constraints
+note right of vote
+    Unique constraint: (option, voter)
+    Index: (voter, option)
+end note
+
+@enduml 

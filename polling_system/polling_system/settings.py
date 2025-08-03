@@ -99,8 +99,7 @@ DATABASES = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
-        'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -159,7 +158,13 @@ SWAGGER_SETTINGS = {
             'name': 'Authorization',
             'description': 'Token-based authentication with required prefix: Token <your_token>',
         }
-    }
+    },
+    'SECURITY': [
+        {
+            'Token': []
+        }
+    ],
+    'USE_SESSION_AUTH': False,
 }
 
 GRAPHENE = {
