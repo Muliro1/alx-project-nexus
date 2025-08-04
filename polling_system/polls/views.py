@@ -135,8 +135,7 @@ class VoteCreate(views.APIView):
         # Create vote
         Vote.objects.create(
             option=option,
-            voter=user,
-            voter_id=serializer.validated_data.get('voter_id', '')
+            voter=user
         )
         
         # Update vote count

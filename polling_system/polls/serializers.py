@@ -100,7 +100,6 @@ class PollSerializer(WritableNestedModelSerializer):
 class VoteSerializer(serializers.Serializer):
     poll_id = serializers.IntegerField()
     option_id = serializers.IntegerField()
-    voter_id = serializers.CharField(max_length=40, required=False)
     
     def validate(self, data):
         """
