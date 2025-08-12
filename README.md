@@ -6,6 +6,7 @@ A robust Django REST API for creating polls, voting, and viewing results with co
 
 - **REST API** with comprehensive CRUD operations
 - **GraphQL API** for flexible data querying
+- **Interactive Home Page** with complete route documentation
 - **Token-based Authentication** with secure endpoints
 - **Rate Limiting** to prevent API abuse
 - **Input Validation & Sanitization** for security
@@ -76,6 +77,7 @@ python manage.py runserver
 ```
 
 ### 7. Access API Documentation
+- **Home Page**: http://localhost:8000/ (Complete route overview)
 - **Swagger UI**: http://localhost:8000/api-docs/
 - **GraphQL Playground**: http://localhost:8000/graphql/
 
@@ -134,6 +136,31 @@ DATABASES = {
 ```
 
 ## 📚 API Documentation
+
+### Home Route
+
+#### 1. Home Page
+```bash
+# GET /
+curl http://localhost:8000/
+```
+
+**Description**: The home route provides a comprehensive overview of all available API endpoints and features. It renders an interactive HTML template that displays:
+
+- **API Information**: Base URL, authentication details, and links to documentation
+- **Authentication Routes**: Token-based authentication endpoints
+- **Poll Management Routes**: CRUD operations for polls
+- **Voting & User Management**: User registration and voting functionality
+- **Admin & Development**: Administrative interfaces and development tools
+
+**Features**:
+- Modern, responsive design with hover effects
+- Color-coded HTTP methods (GET, POST, PUT, DELETE)
+- Direct links to Swagger documentation and GraphQL playground
+- Mobile-friendly layout
+- Interactive route cards with detailed descriptions
+
+**Access**: No authentication required - publicly accessible
 
 ### Authentication
 
@@ -417,6 +444,7 @@ python manage.py migrate
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
+| GET | `/` | Home page | No |
 | POST | `/api-token-auth/` | Get authentication token | No |
 | POST | `/polls/register/` | Register new user | No |
 | GET | `/polls/` | List all polls | Yes |
