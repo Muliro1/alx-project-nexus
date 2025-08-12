@@ -14,6 +14,10 @@ from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from drf_yasg import openapi
 
+def home(request):
+    """Home view that displays all available routes"""
+    return render(request, 'home.html')
+
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]

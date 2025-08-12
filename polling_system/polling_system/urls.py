@@ -21,7 +21,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
 from rest_framework.authentication import TokenAuthentication
-from polls.views import CustomObtainAuthToken
+from polls.views import CustomObtainAuthToken, home
 from graphene_django.views import GraphQLView
 
 
@@ -36,6 +36,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('polls/', include('polls.urls')),
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='api-docs'),
